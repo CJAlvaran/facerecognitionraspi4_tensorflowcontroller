@@ -1,61 +1,72 @@
-# Raspberry Pi Smart Lock System
+# Raspberry Pi Smart Lock System Using Face Recognition, Anti-Spoofing Detection, and Firebase Realtime Database
 
-## Overview
+# Overview
 
-The Raspberry Pi Smart Lock System is an intelligent access control solution that integrates facial recognition, anti-spoofing detection, Firebase Realtime Database, QR code registration, and remote monitoring capabilities. The system is designed to improve security by providing multi-layer authentication and real-time notifications for unauthorized access attempts.
+This project presents the development of a Raspberry Pi-based Smart Lock System that utilizes facial recognition, anti-spoofing detection, QR code registration, and Firebase Realtime Database integration to provide a secure and intelligent access control solution.
 
----
+The system identifies authorized users through facial recognition while simultaneously verifying facial authenticity using a TensorFlow-based anti-spoofing model. Access is granted only when both identity verification and liveness detection are successful. Unauthorized access attempts trigger email notifications containing captured images of the detected individual.
 
-## Features
+The system also supports remote monitoring through Firebase Realtime Database and provides user registration through QR code verification.
 
-### Face Recognition
 
-* Detects and identifies authorized users.
-* Supports multiple registered users.
-* Automatically grants access upon successful authentication.
+# Project Overview
 
-### Anti-Spoofing Detection
+The Raspberry Pi Smart Lock System is an intelligent security solution designed to replace conventional lock-and-key mechanisms with biometric authentication.
 
-* Utilizes a TensorFlow-based liveness detection model.
-* Prevents unauthorized access through photographs or digital screen attacks.
-* Enhances system security by validating real human presence.
+The project combines:
 
-### Firebase Realtime Database Integration
+* Face Recognition
+* Anti-Spoofing Detection
+* QR Code Registration
+* Firebase Realtime Database
+* Email Notification Services
+* Servo Motor Door Control
 
-* Enables real-time communication between the smart lock and cloud services.
-* Synchronizes door status information.
-* Supports remote monitoring and control.
-
-### QR Code Registration
-
-* Generates registration QR codes for authorized enrollment.
-* Simplifies user registration.
-* Automates image collection for model training.
-
-### Smart Lock Control
-
-* Controls a servo motor-based locking mechanism.
-* Supports automatic unlocking after successful authentication.
-* Includes manual override functionality.
-
-### Email Notification System
-
-* Sends alerts when unknown individuals are detected.
-* Attaches captured images for review.
-* Provides timestamped security notifications.
-
-### Status Indicators
-
-| Indicator  | Description           |
-| ---------- | --------------------- |
-| White LED  | Processing / Training |
-| Orange LED | Registration Mode     |
-| Green LED  | Access Granted        |
-| Red LED    | Access Denied         |
+The goal is to provide secure, automated, and remotely monitored access control.
 
 ---
 
-## System Architecture
+# Features
+
+## Face Recognition
+
+* Detects and recognizes registered users.
+* Uses facial encoding and matching techniques.
+* Supports multiple authorized users.
+
+## Anti-Spoofing Detection
+
+* TensorFlow-based liveness detection.
+* Prevents photo and screen spoofing attacks.
+* Verifies that the detected face belongs to a real person.
+
+## QR Code Registration
+
+* Generates registration QR codes.
+* Automates new user enrollment.
+* Captures training images automatically.
+
+## Firebase Realtime Database Integration
+
+* Enables real-time door status synchronization.
+* Supports cloud-based monitoring.
+* Allows remote lock state updates.
+
+## Email Alert System
+
+* Sends security notifications for unknown users.
+* Includes captured image attachments.
+* Provides timestamps for incident tracking.
+
+## Smart Lock Control
+
+* Servo motor-based locking mechanism.
+* Automatic unlock upon successful authentication.
+* Manual override support.
+
+---
+
+# System Architecture
 
 ```text
 Camera Module
@@ -69,28 +80,29 @@ Face Recognition
       ▼
 Anti-Spoofing Verification
       │
-      ├── Authorized User
-      │       │
-      │       ▼
-      │   Unlock Door
-      │
-      └── Unknown User
-              │
-              ▼
-         Email Alert
-              │
-              ▼
-         Firebase Log
+ ┌────┴────┐
+ │         │
+ ▼         ▼
+Known    Unknown
+User      User
+ │          │
+ ▼          ▼
+Unlock    Email Alert
+Door         │
+ │            ▼
+ ▼       Firebase Log
+Firebase
+Update
 ```
 
 ---
 
-## Hardware Requirements
+# Hardware Requirements
 
 | Component                | Quantity |
 | ------------------------ | -------- |
 | Raspberry Pi 4 Model B   | 1        |
-| USB Webcam or Pi Camera  | 1        |
+| USB Webcam / Pi Camera   | 1        |
 | Servo Motor (SG90/MG90S) | 1        |
 | Push Buttons             | 2        |
 | LEDs                     | 4        |
@@ -100,7 +112,7 @@ Anti-Spoofing Verification
 
 ---
 
-## GPIO Configuration
+# GPIO Configuration
 
 | Component       | GPIO Pin |
 | --------------- | -------- |
@@ -114,30 +126,49 @@ Anti-Spoofing Verification
 
 ---
 
-## Software Requirements
+# Software Requirements
 
-### Operating System
+## Operating System
 
 * Raspberry Pi OS Bullseye
 * Raspberry Pi OS Bookworm
 
-### Programming Language
+## Programming Language
 
-* Python 3.9 or later
+* Python 3.9+
 
-### Libraries and Frameworks
+## Python Libraries
 
 * OpenCV
 * TensorFlow
 * NumPy
 * face_recognition
-* Firebase Admin SDK
+* firebase-admin
 * pyzbar
 * RPi.GPIO
 
+Install dependencies:
+
+```bash
+pip install -r requirements.txt
+```
+
 ---
 
-## Project Structure
+# Third-Party Services
+
+| Service                    | Purpose                          |
+| -------------------------- | -------------------------------- |
+| Firebase Realtime Database | Real-time cloud synchronization  |
+| Gmail SMTP                 | Email notification service       |
+| TensorFlow                 | Anti-spoofing inference          |
+| OpenCV                     | Image acquisition and processing |
+| face_recognition           | Facial recognition               |
+| pyzbar                     | QR code decoding                 |
+
+---
+
+# Project Structure
 
 ```text
 raspberrypi4-smartlock/
@@ -163,9 +194,9 @@ raspberrypi4-smartlock/
 
 ---
 
-## Installation
+# Installation Guide
 
-### Clone the Repository
+## Clone Repository
 
 ```bash
 git clone https://github.com/yourusername/raspberrypi4-smartlock.git
@@ -173,7 +204,7 @@ git clone https://github.com/yourusername/raspberrypi4-smartlock.git
 cd raspberrypi4-smartlock
 ```
 
-### Create a Virtual Environment
+## Create Virtual Environment
 
 ```bash
 python3 -m venv venv
@@ -181,7 +212,7 @@ python3 -m venv venv
 source venv/bin/activate
 ```
 
-### Install Dependencies
+## Install Dependencies
 
 ```bash
 pip install -r requirements.txt
@@ -189,25 +220,23 @@ pip install -r requirements.txt
 
 ---
 
-## Firebase Configuration
+# Firebase Configuration
 
-### Step 1: Create a Firebase Project
+## Create Firebase Project
 
-Create a project using Firebase Console and enable Realtime Database.
+1. Open Firebase Console.
+2. Create a new project.
+3. Enable Realtime Database.
 
-### Step 2: Generate Service Account Credentials
+## Generate Service Account Key
 
-Navigate to:
+1. Project Settings
+2. Service Accounts
+3. Generate New Private Key
 
-```text
-Project Settings
-    → Service Accounts
-        → Generate New Private Key
-```
+Save the JSON credential file.
 
-Download the generated JSON file and place it inside the project.
-
-### Step 3: Configure the Application
+## Configure Firebase
 
 ```python
 cred = credentials.Certificate(
@@ -225,34 +254,74 @@ firebase_admin.initialize_app(
 
 ---
 
-## User Registration Process
+# Gmail SMTP Configuration
 
-1. Press the registration button.
-2. Generate a QR code.
-3. Verify the QR code.
-4. Enter registration mode.
-5. Capture facial images.
-6. Store images in the dataset directory.
-7. Retrain the recognition model.
-8. Add the user to the authorized database.
+The project uses Gmail SMTP services for sending security alerts.
+
+## Enable Gmail App Password
+
+1. Enable Two-Factor Authentication.
+2. Navigate to Google Account → Security.
+3. Open App Passwords.
+4. Generate an App Password.
+
+## Configure Application
+
+```python
+sender_email = "your-email@gmail.com"
+receiver_email = "recipient@gmail.com"
+gmail_app_password = "generated-app-password"
+```
 
 ---
 
-## Authentication Workflow
+# Usage Guide
 
-1. Detect face from camera feed.
-2. Generate facial encoding.
+Start the application:
+
+```bash
+python3 main.py
+```
+
+The system will:
+
+1. Initialize Firebase.
+2. Load the TensorFlow model.
+3. Load registered users.
+4. Start camera monitoring.
+5. Wait for authentication requests.
+
+---
+
+# User Registration Workflow
+
+1. Press Register Button.
+2. Generate QR Code.
+3. Verify QR Code.
+4. Enter Registration Mode.
+5. Capture 75 Facial Images.
+6. Save Images.
+7. Train Recognition Model.
+8. Register New User.
+
+---
+
+# Authentication Workflow
+
+1. Detect face.
+2. Generate encoding.
 3. Compare against registered users.
 4. Perform anti-spoofing verification.
 5. Grant or deny access.
 
-### Authorized User
+## Authorized User
 
 * Unlock door.
-* Store entry record.
-* Update Firebase database.
+* Turn on green LED.
+* Save access image.
+* Update Firebase.
 
-### Unknown User
+## Unauthorized User
 
 * Capture image.
 * Send email alert.
@@ -260,24 +329,39 @@ firebase_admin.initialize_app(
 
 ---
 
-## Security Considerations
+# Firebase Database Structure
 
-The following files should never be uploaded to GitHub:
+```json
+{
+  "door_status": true
+}
+```
+
+| Field       | Type    | Description         |
+| ----------- | ------- | ------------------- |
+| door_status | Boolean | Controls lock state |
+
+---
+
+# Security Considerations
+
+The following files should not be committed to GitHub:
 
 ```gitignore
 service-account.json
 .env
 *.jpg
+*.jpeg
 *.png
 venv/
 __pycache__/
 ```
 
-Sensitive information such as Firebase credentials and email passwords should be stored using environment variables.
+Store all sensitive credentials using environment variables.
 
 ---
 
-## Tested Environment
+# Tested Environment
 
 | Component          | Version       |
 | ------------------ | ------------- |
@@ -290,19 +374,19 @@ Sensitive information such as Firebase credentials and email passwords should be
 
 ---
 
-## Future Improvements
+# Future Improvements
 
-* Mobile application integration
-* Web-based administration dashboard
-* Access history and audit logs
-* Cloud image storage
-* RFID backup authentication
-* Multi-user management system
-* Remote lock and unlock controls
+* Mobile Application Integration
+* Web Dashboard
+* Access Logs and Audit Trails
+* RFID Backup Authentication
+* Cloud Storage Integration
+* Multi-User Access Management
+* Remote Lock and Unlock Controls
 
 ---
 
-## Authors
+# Authors
 
 G13 Development Team
 
@@ -312,6 +396,6 @@ Raspberry Pi Smart Lock with Face Recognition, Anti-Spoofing Detection, and Fire
 
 ---
 
-## License
+# License
 
-This project is intended for educational and research purposes.
+This project is intended for educational, academic, and research purposes.
